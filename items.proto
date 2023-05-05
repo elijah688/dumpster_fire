@@ -16,11 +16,11 @@ service ItemsService{
   rpc Get(Item) returns (Item) {}
   rpc Update(Item) returns (Item) {}
   rpc Delete(Item) returns (Item) {}
-  rpc GetAll(Empty) returns (PostList) {}
+  rpc GetAll(Empty) returns (ItemsList) {}
 }
 
-message PostList {
-    repeated Item posts = 1;
+message ItemsList {
+    repeated Item items = 1;
 }
   
 message Empty {}

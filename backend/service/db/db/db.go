@@ -92,3 +92,36 @@ func (p *Pool) UpdateItem(ctx context.Context, in *items.Item) (*items.Item, err
 
 	return in, nil
 }
+
+func (p *Pool) GetAll(ctx context.Context, in *items.Empty) (*items.ItemsList, error) {
+
+	sql, _, err := goqu.From("items").ToSQL()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := p.Query(ctx, sql)
+	if err != nil {
+		log.Printf("failed to execute get all statement: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	list := new(items.ItemsList)
+	for rows.Next() {
+		item := new(items.Item)
+		err = rows.Scan(&item.Id, &item.Title, &item.Content, &item.Src)
+		if err != nil {
+			log.Printf("failed to scan created item: %v", err)
+			return nil, err
+		}
+
+		list.Items = append(list.Items, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error occurred during iteration of rows: %v", err)
+	}
+
+	return list, nil
+}

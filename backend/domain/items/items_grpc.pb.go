@@ -34,7 +34,7 @@ type ItemsServiceClient interface {
 	Get(ctx context.Context, in *Item, opts ...grpc.CallOption) (*Item, error)
 	Update(ctx context.Context, in *Item, opts ...grpc.CallOption) (*Item, error)
 	Delete(ctx context.Context, in *Item, opts ...grpc.CallOption) (*Item, error)
-	GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PostList, error)
+	GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ItemsList, error)
 }
 
 type itemsServiceClient struct {
@@ -81,8 +81,8 @@ func (c *itemsServiceClient) Delete(ctx context.Context, in *Item, opts ...grpc.
 	return out, nil
 }
 
-func (c *itemsServiceClient) GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*PostList, error) {
-	out := new(PostList)
+func (c *itemsServiceClient) GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ItemsList, error) {
+	out := new(ItemsList)
 	err := c.cc.Invoke(ctx, ItemsService_GetAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ type ItemsServiceServer interface {
 	Get(context.Context, *Item) (*Item, error)
 	Update(context.Context, *Item) (*Item, error)
 	Delete(context.Context, *Item) (*Item, error)
-	GetAll(context.Context, *Empty) (*PostList, error)
+	GetAll(context.Context, *Empty) (*ItemsList, error)
 	mustEmbedUnimplementedItemsServiceServer()
 }
 
@@ -118,7 +118,7 @@ func (UnimplementedItemsServiceServer) Update(context.Context, *Item) (*Item, er
 func (UnimplementedItemsServiceServer) Delete(context.Context, *Item) (*Item, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedItemsServiceServer) GetAll(context.Context, *Empty) (*PostList, error) {
+func (UnimplementedItemsServiceServer) GetAll(context.Context, *Empty) (*ItemsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedItemsServiceServer) mustEmbedUnimplementedItemsServiceServer() {}
