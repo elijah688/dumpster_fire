@@ -19,7 +19,7 @@ func New(pool *db.Pool) items.ItemsServiceServer {
 }
 
 func (s *Server) Create(ctx context.Context, in *items.Item) (*items.Item, error) {
-	return in, nil
+	return s.pool.CreateItem(ctx, in)
 }
 func (s *Server) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
 	return nil, nil

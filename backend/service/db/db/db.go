@@ -15,52 +15,54 @@ type Pool struct {
 }
 
 func New() (*Pool, error) {
-	connConfig, err := pgxpool.ParseConfig("postgres://postgres:password@localhost:5432/postgres")
+	connConfig, err := pgxpool.ParseConfig("postgres://postgres:postgres@localhost:5432/items_db")
 	if err != nil {
-		return nil, fmt.Errorf("Unable to parse connection config: %v", err)
+		return nil, fmt.Errorf("unable to parse connection config: %v", err)
 	}
 
 	pool, err := pgxpool.ConnectConfig(context.Background(), connConfig)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to create connection pool: %v", err)
+		return nil, fmt.Errorf("unable to create connection pool: %v", err)
+	}
+
+	_, err = pool.Exec(context.Background(), `
+		CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+		CREATE TABLE IF NOT EXISTS items (
+			id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+			title TEXT NOT NULL,
+			content TEXT NOT NULL,
+			src TEXT NOT NULL
+		)
+	`)
+
+	if err != nil {
+		log.Fatalf("failed to create table: %v", err)
 	}
 
 	return &Pool{pool}, nil
 }
 
-func (p *Pool) CreateItem(ctx context.Context) {
-	q := goqu.From("users").Select("id", "name")
+func (p *Pool) CreateItem(ctx context.Context, in *items.Item) (*items.Item, error) {
+	insert := goqu.Insert("items").Rows(
+		goqu.Record{
+			"title":   in.Title,
+			"content": in.Content,
+			"src":     in.Src,
+		},
+	).Returning("*")
 
-	// Execute the query
-	sql, params, err := q.ToSQL()
+	sql, _, err := insert.ToSQL()
 	if err != nil {
-		fmt.Println(err)
-		// return nil, err
+		return nil, err
 	}
 
-	rows, err := p.Query(ctx, sql, params)
+	row := p.QueryRow(ctx, sql)
+	item := new(items.Item)
+	err = row.Scan(&item.Id, &item.Title, &item.Content, &item.Src)
 	if err != nil {
-		log.Fatalf("failed to execute query: %v", err)
+		log.Printf("failed to scan created item: %v", err)
+		return nil, err
 	}
 
-	fmt.Println(rows)
-	// Query(context.Background(), "SELECT id, name FROM users")
-	// if err != nil {
-	// 	log.Fatalf("failed to execute query: %v", err)
-	// }
-	// defer rows.Close()
-
-	for rows.Next() {
-
-		item := new(items.Item)
-
-		err := rows.Scan(&item.Id, &item.Title)
-		if err != nil {
-			log.Fatalf("failed to scan row: %v", err)
-		}
-		fmt.Printf("ITEM: %v", item)
-	}
-	if err := rows.Err(); err != nil {
-		log.Fatalf("error iterating rows: %v", err)
-	}
+	return item, nil
 }
