@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package items;
+
+option go_package = "./items";
+
+message Item {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string src = 4;
+}
+
+service ItemsService{
+  rpc Create(Item) returns (Item) {}
+  rpc Get(Item) returns (Item) {}
+  rpc Update(Item) returns (Item) {}
+  rpc Delete(Item) returns (Item) {}
+  rpc GetAll(Empty) returns (PostList) {}
+}
+
+message PostList {
+    repeated Item posts = 1;
+}
+  
+message Empty {}
