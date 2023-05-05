@@ -125,3 +125,23 @@ func (p *Pool) GetAll(ctx context.Context, in *items.Empty) (*items.ItemsList, e
 
 	return list, nil
 }
+
+func (p *Pool) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
+
+	sql, args, err := goqu.From("items").
+		Select("*").
+		Where(goqu.C("id").
+			Eq(in.Id)).ToSQL()
+	if err != nil {
+		return nil, err
+	}
+
+	item := new(items.Item)
+	if err := p.QueryRow(ctx, sql, args...).Scan(&item.Id, &item.Title, &item.Content, &item.Src); err != nil {
+		log.Printf("failed to scan created item: %v", err)
+		return nil, err
+	}
+
+	return item, nil
+
+}

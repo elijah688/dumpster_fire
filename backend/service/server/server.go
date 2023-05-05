@@ -32,7 +32,8 @@ func (s *Server) GetAll(ctx context.Context, in *items.Empty) (*items.ItemsList,
 }
 
 func (s *Server) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
-	return nil, nil
+	return s.pool.Get(ctx, in)
+
 }
 
 func (s *Server) Delete(ctx context.Context, in *items.Item) (*items.Item, error) {
