@@ -66,3 +66,29 @@ func (p *Pool) CreateItem(ctx context.Context, in *items.Item) (*items.Item, err
 
 	return item, nil
 }
+func (p *Pool) UpdateItem(ctx context.Context, in *items.Item) (*items.Item, error) {
+	update := goqu.Update("items").
+		Set(goqu.Record{
+			"title":   in.Title,
+			"content": in.Content,
+			"src":     in.Src,
+		}).
+		Where(goqu.C("id").Eq(in.Id))
+
+	sql, _, err := update.ToSQL()
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := p.Exec(ctx, sql)
+	if err != nil {
+		log.Printf("failed to execute update statement: %v", err)
+		return nil, err
+	}
+
+	if result.RowsAffected() == 0 {
+		return nil, fmt.Errorf("no rows were updated")
+	}
+
+	return in, nil
+}

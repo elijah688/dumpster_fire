@@ -21,11 +21,12 @@ func New(pool *db.Pool) items.ItemsServiceServer {
 func (s *Server) Create(ctx context.Context, in *items.Item) (*items.Item, error) {
 	return s.pool.CreateItem(ctx, in)
 }
-func (s *Server) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
-	return nil, nil
-}
 
 func (s *Server) Update(ctx context.Context, in *items.Item) (*items.Item, error) {
+	return s.pool.UpdateItem(ctx, in)
+}
+
+func (s *Server) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
 	return nil, nil
 }
 
