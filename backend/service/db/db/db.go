@@ -145,3 +145,23 @@ func (p *Pool) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
 	return item, nil
 
 }
+
+func (p *Pool) Delete(ctx context.Context, in *items.Item) (*items.Item, error) {
+
+	sql, args, err := goqu.Delete("items").
+		Where(goqu.C("id").
+			Eq(in.Id)).Returning("*").ToSQL()
+
+	if err != nil {
+		return nil, err
+	}
+
+	item := new(items.Item)
+	if err := p.QueryRow(ctx, sql, args...).Scan(&item.Id, &item.Title, &item.Content, &item.Src); err != nil {
+		log.Printf("failed to scan created item: %v", err)
+		return nil, err
+	}
+
+	return item, nil
+
+}

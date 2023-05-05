@@ -37,5 +37,6 @@ func (s *Server) Get(ctx context.Context, in *items.Item) (*items.Item, error) {
 }
 
 func (s *Server) Delete(ctx context.Context, in *items.Item) (*items.Item, error) {
-	return nil, nil
+	return s.pool.Delete(ctx, in)
+
 }
