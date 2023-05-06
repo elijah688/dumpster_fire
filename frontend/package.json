@@ -10,11 +10,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@grpc/grpc-js": "^1.8.14",
-    "grpc-tools": "^1.12.4",
-    "grpc-web": "^1.4.2",
+    "create-svelte": "^3.3.0",
     "protoc-gen-grpc-web": "^1.4.1",
     "protoc-gen-js": "^3.21.2",
-    "ts-protoc-gen": "^0.15.1-pre.a71b34e"
+    "ts-protoc-gen": "^0.15.1-pre.a71b34e",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.14",
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "google-protobuf": "^3.21.2",
+    "grpc-web": "^1.4.2",
+    "protobufjs": "^7.2.3"
   }
 }
