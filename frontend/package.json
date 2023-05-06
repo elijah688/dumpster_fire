@@ -1,0 +1,20 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@grpc/grpc-js": "^1.8.14",
+    "grpc-tools": "^1.12.4",
+    "grpc-web": "^1.4.2",
+    "protoc-gen-grpc-web": "^1.4.1",
+    "protoc-gen-js": "^3.21.2",
+    "ts-protoc-gen": "^0.15.1-pre.a71b34e"
+  }
+}
